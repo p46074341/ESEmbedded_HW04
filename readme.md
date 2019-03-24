@@ -47,5 +47,6 @@ This is the hw04 sample. Please follow the steps below.
 Take your note here if you want. (Optional)
 
 user button is PA0
+
 read the state of button by IDR(input data register address offset 0x10)
 
