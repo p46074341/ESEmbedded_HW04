@@ -10,7 +10,7 @@
 #define SET_BIT(addr, bit) (REG(addr) |= UINT32_1 << (bit))
 #define CLEAR_BIT(addr, bit) (REG(addr) &= ~(UINT32_1 << (bit)))
 
-#define READ_BIT(addr, bit) (*((volatile uint32_t *)((addr) + (bit)))) 
+#define READ_BIT(addr, bit) (REG(addr) << (bit)) 
 
 //RCC
 #define RCC_BASE 0x40023800
