@@ -10,7 +10,7 @@
 #define SET_BIT(addr, bit) (REG(addr) |= UINT32_1 << (bit))
 #define CLEAR_BIT(addr, bit) (REG(addr) &= ~(UINT32_1 << (bit)))
 
-// #define READ_BIT(addr, bit) ??????
+#define READ_BIT(addr, bit) (*((volatile uint32_t *)((addr) + (bit)))) 
 
 //RCC
 #define RCC_BASE 0x40023800
@@ -36,6 +36,9 @@
 #define GPIOx_OSPEEDR_OFFSET 0x08
 #define OSPEEDRy_1_BIT(y) ((y)*2 + 1)
 #define OSPEEDRy_0_BIT(y) ((y)*2)
+
+#define GPIOx_IDR_OFFSET 0x10
+#define IDR_BIT(y) (y)
 
 #define GPIOx_PUPDR_OFFSET 0x0C
 #define PUPDRy_1_BIT(y) ((y)*2 + 1)

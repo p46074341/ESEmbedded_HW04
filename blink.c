@@ -7,7 +7,7 @@
  * 
  */
 void led_init(unsigned int led)
-{
+{	
 	SET_BIT(RCC_BASE + RCC_AHB1ENR_OFFSET, GPIO_EN_BIT(GPIO_PORTD));
 
 	//MODER led pin = 01 => General purpose output mode
@@ -26,32 +26,58 @@ void led_init(unsigned int led)
 	CLEAR_BIT(GPIO_BASE(GPIO_PORTD) + GPIOx_PUPDR_OFFSET, PUPDRy_0_BIT(led));
 }
 
+void user_button_init(void)
+{
+	SET_BIT(RCC_BASE + RCC_AHB1ENR_OFFSET, GPIO_EN_BIT(GPIO_PORTA));
+
+	//MODER button pin = 00 => General purpose output mode
+	CLEAR_BIT(GPIO_BASE(GPIO_PORTA) + GPIOx_MODER_OFFSET, MODERy_1_BIT(0));
+	CLEAR_BIT(GPIO_BASE(GPIO_PORTA) + GPIOx_MODER_OFFSET, MODERy_0_BIT(0));
+
+	//OT button pin = 0 => Output push-pull
+	CLEAR_BIT(GPIO_BASE(GPIO_PORTA) + GPIOx_OTYPER_OFFSET, OTy_BIT(0));
+	
+	//OSPEEDR button pin = 00 => Low speed
+	CLEAR_BIT(GPIO_BASE(GPIO_PORTA) + GPIOx_OSPEEDR_OFFSET, OSPEEDRy_1_BIT(0));
+	CLEAR_BIT(GPIO_BASE(GPIO_PORTA) + GPIOx_OSPEEDR_OFFSET, OSPEEDRy_0_BIT(0));
+
+	//PUPDR button pin = 10 => PD
+	SET_BIT(GPIO_BASE(GPIO_PORTA) + GPIOx_PUPDR_OFFSET, PUPDRy_1_BIT(0));
+	CLEAR_BIT(GPIO_BASE(GPIO_PORTA) + GPIOx_PUPDR_OFFSET, PUPDRy_0_BIT(0));
+}
+
 /**
  * 
- * blink LED forever
+ * blink LED forever when user button is pressed on
  * 
  */
 void blink(unsigned int led)
 {
 	led_init(led);
-
+	
+	user_button_init();
 	unsigned int i;
-
+	
 	while (1)
-	{
-		//set GPIOD led pin
-		SET_BIT(GPIO_BASE(GPIO_PORTD) + GPIOx_BSRR_OFFSET, BSy_BIT(led));
-
-		for (i = 0; i < 100000; i++)
-			;
-
-		//reset GPIOD led pin
-		SET_BIT(GPIO_BASE(GPIO_PORTD) + GPIOx_BSRR_OFFSET, BRy_BIT(led));
-
-		for (i = 0; i < 100000; i++)
-			;
+	{	
+		if((READ_BIT(GPIO_BASE(GPIO_PORTA) + GPIOx_IDR_OFFSET,IDR_BIT(GPIO_PORTA)) & 1) != 0 )
+		{
+			while(1)
+			{
+				//set GPIOD led pin
+				SET_BIT(GPIO_BASE(GPIO_PORTD) + GPIOx_BSRR_OFFSET, BSy_BIT(led));
+				for (i = 0; i < 100000; i++)
+				;
+		
+				//reset GPIOD led pin
+				SET_BIT(GPIO_BASE(GPIO_PORTD) + GPIOx_BSRR_OFFSET, BRy_BIT(led));
+				for (i = 0; i < 100000; i++)
+				;
+			}
+		}
 	}
 }
+
 
 /**
  * 
