@@ -50,3 +50,6 @@ user button is PA0
 
 read the state of button by IDR(input data register address offset 0x10)
 
+#define READ_BIT(addr, bit) ((REG(addr) >> (bit)) % 2)
+
+this macro function can get the content of the address by bit 
