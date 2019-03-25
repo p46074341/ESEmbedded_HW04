@@ -60,7 +60,7 @@ void blink(unsigned int led)
 	
 	while (1)
 	{	
-		if((READ_BIT(GPIO_BASE(GPIO_PORTA) + GPIOx_IDR_OFFSET,IDR_BIT(0)) & 0x01) != 0x00 )
+		if((READ_BIT(GPIO_BASE(GPIO_PORTA) + GPIOx_IDR_OFFSET,IDR_BIT(0))) != 0x00 )
 		{
 			while(1)
 			{
